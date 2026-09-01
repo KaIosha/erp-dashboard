@@ -16,6 +16,10 @@ namespace backend.repositories.Implementaions
             _context = context;
             _dbSet = context.Set<T>();
         }
+        public IQueryable<T> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
 
         public virtual async Task<T?> GetByIdAsync(int id)
         {

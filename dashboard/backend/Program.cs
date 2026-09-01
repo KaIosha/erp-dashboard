@@ -7,6 +7,8 @@ using backend.repositories.Interfaces;
 using backend.Services.Implementations;
 using backend.Services.Interfaces;
 using backend.UOW;
+using backend.Validation.Role;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +43,7 @@ namespace backend
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("con")));
             builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
+            builder.Services.AddValidatorsFromAssemblyContaining<RoleValidator>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -48,6 +51,8 @@ namespace backend
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IRolesService, RolesService>();
+
 
 
             builder.Services.AddAuthentication(options =>
