@@ -1,8 +1,11 @@
 ﻿using backend.dtos;
 using backend.models;
 using backend.Services.Interfaces;
+using backend.Validation.User;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -13,19 +16,26 @@ namespace backend.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _service;
-        public UsersController(IUserService service)
+        private readonly IValidator<CreateUserDto> _createValidator;
+        private readonly IValidator<UpdateUserDataDto> _updateValidator;
+        public UsersController(
+            IUserService service,
+            IValidator<CreateUserDto> createValidator,
+            IValidator<UpdateUserDataDto> updateValidator)
         {
             _service = service;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
-        //  GET    /api/users           — List all users
+        [Authorize(Policy = "users:view")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1,int pageSize = 20)
         {
             var result = await _service.GetAllUsers(page, pageSize);
             return Ok(result);
         }
-        //  GET    /api/users/{id}     - Get user by ID
+        [Authorize(Policy = "users:view")]
         [HttpGet("getById")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -36,10 +46,17 @@ namespace backend.Controllers
             }
             return NotFound();
         }
-        //    POST / api / users           — Create user
+       
+        [Authorize(Policy = "users:manage")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateUser(CreateUserDto dto)
         {
+            var validationResult = _createValidator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join(',', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
             var result = await _service.CreateUserAsync(dto);
             if (result is not null)
             {
@@ -47,10 +64,17 @@ namespace backend.Controllers
             }
             return BadRequest("Failed to create user");
         }
-        //    PUT    /api/users            - Update user
+       
+        [Authorize(Policy = "users:manage")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateUserById(int id, UpdateUserDataDto dto)
         {
+            var validationResult = _updateValidator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join(',', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
             var result = await _service.UpdateUserData(id, dto);
             if (result is not null)
             {
@@ -58,7 +82,8 @@ namespace backend.Controllers
             }
             return BadRequest();
         }
-        //     DELETE /api/users/{id}      — Delete user
+       
+        [Authorize(Policy = "users:manage")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteUserById(int id)
         {

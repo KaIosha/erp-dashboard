@@ -36,7 +36,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("backend.models.Customers", b =>
@@ -79,7 +79,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("backend.models.Departments", b =>
@@ -96,7 +96,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("backend.models.Employees", b =>
@@ -143,7 +143,7 @@ namespace backend.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("backend.models.InvoiceLines", b =>
@@ -174,7 +174,7 @@ namespace backend.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("InvoiceLines", (string)null);
+                    b.ToTable("InvoiceLines");
                 });
 
             modelBuilder.Entity("backend.models.Invoices", b =>
@@ -194,11 +194,14 @@ namespace backend.Migrations
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("PaidAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -212,9 +215,10 @@ namespace backend.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("backend.models.OrderLines", b =>
@@ -246,7 +250,7 @@ namespace backend.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderLines", (string)null);
+                    b.ToTable("OrderLines");
                 });
 
             modelBuilder.Entity("backend.models.Orders", b =>
@@ -282,7 +286,7 @@ namespace backend.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("backend.models.Products", b =>
@@ -323,7 +327,7 @@ namespace backend.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("backend.models.PurchaseLines", b =>
@@ -352,7 +356,7 @@ namespace backend.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("PurchaseLines", (string)null);
+                    b.ToTable("PurchaseLines");
                 });
 
             modelBuilder.Entity("backend.models.PurchaseOrders", b =>
@@ -383,7 +387,7 @@ namespace backend.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("PurchaseOrders", (string)null);
+                    b.ToTable("PurchaseOrders");
                 });
 
             modelBuilder.Entity("backend.models.RefreshToken", b =>
@@ -414,7 +418,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("backend.models.Roles", b =>
@@ -435,7 +439,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("backend.models.Suppliers", b =>
@@ -468,7 +472,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("backend.models.Users", b =>
@@ -502,7 +506,7 @@ namespace backend.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("backend.models.Employees", b =>
@@ -538,8 +542,7 @@ namespace backend.Migrations
                     b.HasOne("backend.models.Orders", "Order")
                         .WithOne("Invoice")
                         .HasForeignKey("backend.models.Invoices", "OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
 

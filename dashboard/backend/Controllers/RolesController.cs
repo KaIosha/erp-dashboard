@@ -2,6 +2,7 @@
 using backend.Services.Interfaces;
 using backend.Validation.Role;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,18 @@ namespace backend.Controllers
     {
         private readonly IRolesService _service;
         private readonly IValidator<CreateRoleDto> _validator;
-        public RolesController(IRolesService service, IValidator<CreateRoleDto> validator)
+        private readonly IValidator<UpdateRoleDataDto> _updateValidator;
+        public RolesController(
+            IRolesService service,
+            IValidator<CreateRoleDto> validator,
+            IValidator<UpdateRoleDataDto> updateValidator)
         {
             _service = service;
             _validator = validator;
+            _updateValidator = updateValidator;
         }
 
+        [Authorize(Policy = "roles:view")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int pageSize = 20)
         {
@@ -27,6 +34,7 @@ namespace backend.Controllers
             return Ok(result);
         }
 
+        [Authorize(Policy = "roles:view")]
         [HttpGet("getById")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -38,6 +46,7 @@ namespace backend.Controllers
             return NotFound();
         }
 
+        [Authorize(Policy = "roles:manage")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateRole(CreateRoleDto dto)
         {
@@ -55,9 +64,16 @@ namespace backend.Controllers
             return BadRequest("Failed to create role");
         }
 
+        [Authorize(Policy = "roles:manage")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateRoleById(int id, UpdateRoleDataDto dto)
         {
+            var validationResult = _updateValidator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join(',', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
             var result = await _service.UpdateRoleData(id, dto);
             if (result is not null)
             {
@@ -65,6 +81,7 @@ namespace backend.Controllers
             }
             return BadRequest();
         }
+        [Authorize(Policy = "roles:manage")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteRoleById(int id)
         {

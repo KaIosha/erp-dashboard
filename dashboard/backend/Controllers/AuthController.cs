@@ -1,5 +1,7 @@
 ﻿using backend.dtos;
 using backend.Services.Interfaces;
+using backend.Validation.Auth;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +13,30 @@ namespace backend.Controllers
     public class AuthController : ControllerBase
     {
         private IAuthService _Service;
-        public AuthController(IAuthService Service)
+        private readonly IValidator<UserRegisterDto> _registerValidator;
+        private readonly IValidator<UserLoginDto> _loginValidator;
+        private readonly IValidator<RefreshTokenDto> _refreshTokenValidator;
+        public AuthController(
+            IAuthService Service,
+            IValidator<UserRegisterDto> registerValidator,
+            IValidator<UserLoginDto> loginValidator,
+            IValidator<RefreshTokenDto> refreshTokenValidator)
         {
             _Service = Service;
+            _registerValidator = registerValidator;
+            _loginValidator = loginValidator;
+            _refreshTokenValidator = refreshTokenValidator;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> register(UserRegisterDto dto)
         {
+            var validationResult = _registerValidator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join(',', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
             var result = await _Service.RegisterUserAsync(dto);
             if (result.IsSuccess is false)
             {
@@ -27,10 +45,16 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-        //  POST /api/auth/login        — Login and obtain JWT token
+        
         [HttpPost("login")]
         public async Task<IActionResult> login(UserLoginDto dto)
         {
+            var validationResult = _loginValidator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join(',', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
             try
             {
                 var result = await _Service.LoginAsync(dto);
@@ -43,11 +67,16 @@ namespace backend.Controllers
         }
 
 
-        //  POST /api/auth/refresh      — Refresh JWT token
         [HttpPost("refreshToken")]
         public async Task<IActionResult> refreshToken(RefreshTokenDto dto)
-        { 
-           var result = await _Service.RefreshTokenAsync(dto);
+        {
+            var validationResult = _refreshTokenValidator.Validate(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join(',', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            var result = await _Service.RefreshTokenAsync(dto);
             if (result.IsSuccess is false)
             {
                 return BadRequest(result.Message);
@@ -55,7 +84,6 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-        //  POST /api/auth/logout       — Logout
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] string RefreshToken)
@@ -68,18 +96,5 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-
-
-        [Authorize]
-        [HttpGet("test-token")]
-        public IActionResult Test()
-        {
-            return Ok(
-                new
-                {
-                    message = "Hello Youssef"
-                }
-                );
-        }
     }
 }

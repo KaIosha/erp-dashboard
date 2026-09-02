@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using backend.Data;
-using backend.repositories.Implementaions;
+using backend.repositories.Implementations;
 using backend.repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -12,17 +12,46 @@ namespace backend.UOW
         private readonly ApplicationDbContext _context;
         public IUserRepository Users { get; }
         public IRefreshTokenRepository RefreshTokenRepository { get; }
+        public ICustomerRepository Customers { get; }
+        public IProductRepository Products { get; }
+        public ISupplierRepository Suppliers { get; }
+        public IPurchaseOrderRepository PurchaseOrders { get; }
+        public IOrderRepository Orders { get; }
+        public IInvoiceRepository Invoices { get; }
+        public IEmployeeRepository Employees { get; }
+        public IDepartmentsRepository Departments { get; }
+        public IRolesRepository Roles { get; }
         private bool _disposed;
         private IDbContextTransaction? _currentTransaction;
 
         // ConcurrentDictionary for thread-safe repository caching
         private readonly ConcurrentDictionary<Type, object> _repositories = new();
 
-        public UnitOfWork(ApplicationDbContext context,IUserRepository user , IRefreshTokenRepository RefreshTokenRepository)
+        public UnitOfWork(ApplicationDbContext context,
+            IUserRepository user,
+            IRefreshTokenRepository refreshTokenRepository,
+            ICustomerRepository customers,
+            IProductRepository products,
+            ISupplierRepository suppliers,
+            IPurchaseOrderRepository purchaseOrders,
+            IOrderRepository orders,
+            IInvoiceRepository invoices,
+            IEmployeeRepository employees,
+            IDepartmentsRepository departments,
+            IRolesRepository roles)
         {
             _context = context;
-            this.Users = user;
-            this.RefreshTokenRepository = RefreshTokenRepository;
+            Users = user;
+            RefreshTokenRepository = refreshTokenRepository;
+            Customers = customers;
+            Products = products;
+            Suppliers = suppliers;
+            PurchaseOrders = purchaseOrders;
+            Orders = orders;
+            Invoices = invoices;
+            Employees = employees;
+            Departments = departments;
+            Roles = roles;
         }
 
         public IGenericRepository<T> Repository<T>() where T : class

@@ -1,12 +1,10 @@
 ﻿using System.Linq.Expressions;
-using backend.dtos;
 using backend.models;
 
 namespace backend.repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        IQueryable<T> GetQueryable();
         Task<T?> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);

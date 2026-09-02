@@ -1,11 +1,10 @@
 ﻿using System.Linq.Expressions;
 using backend.Data;
-using backend.dtos;
 using backend.models;
 using backend.repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.repositories.Implementaions
+namespace backend.repositories.Implementations
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -15,10 +14,6 @@ namespace backend.repositories.Implementaions
         {
             _context = context;
             _dbSet = context.Set<T>();
-        }
-        public IQueryable<T> GetQueryable()
-        {
-            return _dbSet.AsQueryable();
         }
 
         public virtual async Task<T?> GetByIdAsync(int id)

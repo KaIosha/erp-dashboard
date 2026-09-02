@@ -33,6 +33,15 @@ namespace backend.Services.Implementations
                 new Claim(ClaimTypes.Role,user.Role.Name.ToString())
             };
 
+            if (user.Role?.Permissions is { Count: > 0 })
+            {
+                foreach (var permission in user.Role.Permissions)
+                {
+                    claims.Add(new Claim("permission", permission));
+                }
+            }
+
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
 
              var token = new JwtSecurityToken(

@@ -3,7 +3,6 @@ using backend.models;
 using backend.Services.Interfaces;
 using backend.UOW;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services.Implementations
 {
@@ -15,7 +14,7 @@ namespace backend.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginationResultDto<GetUserDataDto>> GetAllUsers(int page = 1,int pageSize = 20)
+        public async Task<PaginationResultDto<GetUserDataDto>> GetAllUsers(int page = 1, int pageSize = 20)
         {
             if (page < 1)
                 page = 1;
@@ -23,26 +22,21 @@ namespace backend.Services.Implementations
             if (pageSize < 1)
                 pageSize = 20;
 
-            var query = _unitOfWork.Repository<Users>().GetQueryable();
+            var (users, totalCount) = await _unitOfWork.Users.GetPageAsync(page, pageSize);
 
-            var totalCount = await query.CountAsync();
-
-            var products = await query
-                .OrderBy(p => p.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(p => new GetUserDataDto
+            var data = users
+                .Select(u => new GetUserDataDto
                 {
-                    FirstName = p.FirstName,
-                    LastName = p.LastName,
-                    Email = p.Email,
-                    RoleId = p.RoleId
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    RoleId = u.RoleId
                 })
-                .ToListAsync();
+                .ToList();
 
             return new PaginationResultDto<GetUserDataDto>
             {
-                Data = products,
+                Data = data,
                 Page = page,
                 PageSize = pageSize,
                 TotalCount = totalCount,
@@ -103,11 +97,9 @@ namespace backend.Services.Implementations
             _unitOfWork.Users.Remove(user);
             await _unitOfWork.SaveChangesAsync();
             return true;
-
         }
         public async Task<GetUserDataDto> CreateUserAsync(CreateUserDto dto)
         {
-
             var existingUser = await _unitOfWork.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
             if (existingUser is not null)
             {

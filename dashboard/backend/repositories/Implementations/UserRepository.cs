@@ -4,14 +4,12 @@ using backend.repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.repositories.Implementaions
+namespace backend.repositories.Implementations
 {
     public class UserRepository : GenericRepository<Users>, IUserRepository
     {
-        private ApplicationDbContext _context;
         public UserRepository(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<bool> AddUserAsync(Users user)
@@ -27,11 +25,23 @@ namespace backend.repositories.Implementaions
             }
         }
 
-        public async Task<Users> FindEmailAsync(string email)
+        public async Task<Users?> FindEmailAsync(string email)
         {
             var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(e => e.Email == email);
             if (user != null) return user;
             return null;
+        }
+
+        public async Task<(List<Users> Data, int TotalCount)> GetPageAsync(int page, int pageSize)
+        {
+            var query = _context.Users.AsNoTracking();
+            var totalCount = await query.CountAsync();
+            var data = await query
+                .OrderBy(u => u.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            return (data, totalCount);
         }
     }
 }

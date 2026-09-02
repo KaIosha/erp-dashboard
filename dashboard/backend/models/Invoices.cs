@@ -8,12 +8,13 @@
         public string Status { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public DateTime? PaidAt { get; set; }
+        public string? PaymentMethod { get; set; }
 
         public int CustomerId { get; set; }
         public Customers Customer { get; set; } = null!;
 
-        public int OrderId { get; set; }
-        public Orders Order { get; set; } = null!;
+        public int? OrderId { get; set; }
+        public Orders? Order { get; set; }
 
         public ICollection<InvoiceLines> Lines { get; set; } = new List<InvoiceLines>();
 
