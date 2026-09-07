@@ -2,6 +2,12 @@
 
 > **Note:** This repository is part of a mentor program. I got cloned and worked on it.
 
+---
+
+> **Docker Integration**
+> This project was not required to use Docker, but I took the initiative to learn it and applied it to containerize both the backend API and the SQL Server database.
+---
+
 A full-stack Enterprise Resource Planning (ERP) dashboard. This project is **technology-agnostic** — you can implement it using **any backend or frontend stack** of your choice.
 
 ---
