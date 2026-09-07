@@ -26,7 +26,7 @@ namespace backend.Controllers
             _updateValidator = updateValidator;
         }
 
-        [Authorize(Policy = "roles:view")]
+        //[Authorize(Policy = "roles:view")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int pageSize = 20)
         {
@@ -34,7 +34,7 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-        [Authorize(Policy = "roles:view")]
+        //[Authorize(Policy = "roles:view")]
         [HttpGet("getById")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,7 +46,7 @@ namespace backend.Controllers
             return NotFound();
         }
 
-        [Authorize(Policy = "roles:manage")]
+        //[Authorize(Policy = "roles:manage")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateRole(CreateRoleDto dto)
         {
@@ -64,7 +64,7 @@ namespace backend.Controllers
             return BadRequest("Failed to create role");
         }
 
-        [Authorize(Policy = "roles:manage")]
+        //[Authorize(Policy = "roles:manage")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateRoleById(int id, UpdateRoleDataDto dto)
         {
@@ -81,7 +81,7 @@ namespace backend.Controllers
             }
             return BadRequest();
         }
-        [Authorize(Policy = "roles:manage")]
+        //[Authorize(Policy = "roles:manage")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteRoleById(int id)
         {

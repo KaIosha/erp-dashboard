@@ -29,7 +29,7 @@ namespace backend.Controllers
             _payValidator = payValidator;
         }
 
-        [Authorize(Policy = "invoices:view")]
+        //[Authorize(Policy = "invoices:view")]
         [HttpGet]
         public async Task<IActionResult> GetAllInvoices([FromQuery] string? search = null,
             [FromQuery] string? status = null, [FromQuery] int? customerId = null,
@@ -40,7 +40,7 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-        [Authorize(Policy = "invoices:view")]
+        //[Authorize(Policy = "invoices:view")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetInvoice(int id)
         {
@@ -51,7 +51,7 @@ namespace backend.Controllers
             return Ok(invoice);
         }
 
-        [Authorize(Policy = "invoices:manage")]
+        //[Authorize(Policy = "invoices:manage")]
         [HttpGet("{id:int}/pdf")]
         public async Task<IActionResult> GetInvoicePdf(int id)
         {
@@ -62,7 +62,7 @@ namespace backend.Controllers
             return File(pdfData, "application/pdf", $"invoice_{id}.pdf");
         }
 
-        [Authorize(Policy = "invoices:manage")]
+        //[Authorize(Policy = "invoices:manage")]
         [HttpPost]
         public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceDto dto)
         {
@@ -76,7 +76,7 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetInvoice), new { id = invoice.Id }, invoice);
         }
 
-        [Authorize(Policy = "invoices:manage")]
+       //[Authorize(Policy = "invoices:manage")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateInvoice(int id, [FromBody] UpdateInvoiceDto dto)
         {
@@ -93,7 +93,7 @@ namespace backend.Controllers
             return Ok(invoice);
         }
 
-        [Authorize(Policy = "invoices:pay")]
+        //[Authorize(Policy = "invoices:pay")]
         [HttpPatch("{id:int}/pay")]
         public async Task<IActionResult> PayInvoice(int id, [FromBody] PayInvoiceDto dto)
         {
@@ -109,7 +109,7 @@ namespace backend.Controllers
             return Ok(invoice);
         }
 
-        [Authorize(Policy = "invoices:manage")]
+        //[Authorize(Policy = "invoices:manage")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteInvoice(int id)
         {

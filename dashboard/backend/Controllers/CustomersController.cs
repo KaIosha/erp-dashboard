@@ -25,7 +25,7 @@ namespace backend.Controllers
             _updateValidator = updateValidator;
         }
 
-        [Authorize(Policy = "customers:view")]
+        //[Authorize(Policy = "customers:view")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int pageSize = 20)
         {
@@ -33,7 +33,7 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-        [Authorize(Policy = "customers:view")]
+        //[Authorize(Policy = "customers:view")]
         [HttpGet("getById")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -45,7 +45,7 @@ namespace backend.Controllers
             return NotFound("Customer Not Found");
         }
 
-        [Authorize(Policy = "customers:manage")]
+        //[Authorize(Policy = "customers:manage")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateCustomer(CreateCustomerDto dto)
         {
@@ -63,7 +63,7 @@ namespace backend.Controllers
             return BadRequest("Failed to create customer");
         }
 
-        [Authorize(Policy = "customers:manage")]
+        //[Authorize(Policy = "customers:manage")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateCustomerById(int id, UpdateCustomerDataDto dto)
         {
@@ -80,7 +80,7 @@ namespace backend.Controllers
             }
             return BadRequest("Failed to update customer");
         }
-        [Authorize(Policy = "customers:manage")]
+        //[Authorize(Policy = "customers:manage")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteCustomerById(int id)
         {

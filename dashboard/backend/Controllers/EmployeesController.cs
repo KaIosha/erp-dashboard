@@ -26,7 +26,7 @@ namespace backend.Controllers
             _updateValidator = updateValidator;
         }
 
-        [Authorize(Policy = "employees:view")]
+       // [Authorize(Policy = "employees:view")]
         [HttpGet]
         public async Task<IActionResult> GetEmployees(
             string? search = null,
@@ -39,7 +39,7 @@ namespace backend.Controllers
             return Ok(employees);
         }
 
-        [Authorize(Policy = "employees:view")]
+        //[Authorize(Policy = "employees:view")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetEmployeeById(int id)
         {
@@ -51,7 +51,7 @@ namespace backend.Controllers
             return Ok(employee);
         }
 
-        [Authorize(Policy = "employees:manage")]
+        //[Authorize(Policy = "employees:manage")]
         [HttpPost]
         public async Task<IActionResult> CreateEmployee(CreateEmployeeDto dto)
         {
@@ -76,7 +76,7 @@ namespace backend.Controllers
             }
         }
 
-        [Authorize(Policy = "employees:manage")]
+        //[Authorize(Policy = "employees:manage")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateEmployee(int id, UpdateEmployeeDto dto)
         {
@@ -101,7 +101,7 @@ namespace backend.Controllers
             }
         }
 
-        [Authorize(Policy = "employees:manage")]
+        //[Authorize(Policy = "employees:manage")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {

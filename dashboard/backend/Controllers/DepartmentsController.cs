@@ -16,7 +16,7 @@ namespace backend.Controllers
             _departmentService = departmentService;
         }
 
-        [Authorize(Policy = "employees:view")]
+        //[Authorize(Policy = "employees:view")]
         [HttpGet]
         public async Task<IActionResult> GetDepartments()
         {

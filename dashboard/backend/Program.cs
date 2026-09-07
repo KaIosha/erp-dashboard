@@ -92,8 +92,7 @@ namespace backend
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-            builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
-            builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+
           
 
 
