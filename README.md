@@ -1,6 +1,6 @@
 # ERP Dashboard
 
-> **Note:** This repository is used as part of my mentor program.
+> **Note:** This repository is part of a mentor program. I got cloned and worked on it.
 
 A full-stack Enterprise Resource Planning (ERP) dashboard. This project is **technology-agnostic** — you can implement it using **any backend or frontend stack** of your choice.
 
